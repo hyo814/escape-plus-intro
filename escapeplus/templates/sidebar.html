@@ -1,0 +1,10 @@
+<div class="card rounded-xl mb-3">
+    <div class="card-header bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white rounded-t-xl font-bold">
+        <i class="bi bi-door-open me-1"></i> 방탈출에 플러스!
+    </div>
+    <div class="card-body d-flex flex-column gap-1">
+        <a href="{% url 'maps:map_best' %}" class="text-[#495057] no-underline py-1.5 transition-colors duration-150 hover:text-[#667eea]"><i class="bi bi-trophy-fill text-warning mr-1.5"></i> 베스트</a>
+        <a href="{% url 'maps:map_search' %}" class="text-[#495057] no-underline py-1.5 transition-colors duration-150 hover:text-[#667eea]"><i class="bi bi-search mr-1.5"></i> 지도 검색</a>
+        <a href="{% url 'cafe:cafe_list' %}" class="text-[#495057] no-underline py-1.5 transition-colors duration-150 hover:text-[#667eea]"><i class="bi bi-shop mr-1.5"></i> 카페 목록</a>
+    </div>
+</div>
