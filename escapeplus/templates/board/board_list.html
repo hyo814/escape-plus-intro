@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category_display }} 게시판{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-2 col-md-3">
+        {% include "sidebar.html" %}
+    </div>
+    <div class="col-lg-10 col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">{{ category_display }} 게시판</h3>
+            <a href="{% url 'board:board_write' category %}" class="btn btn-primary">
+                <i class="bi bi-pencil-square me-1"></i>작성하기
+            </a>
+        </div>
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="w-[60px]">#</th>
+                            <th>제목</th>
+                            <th class="w-[120px]">작성자</th>
+                            <th class="w-[120px]">작성일</th>
+                            <th class="w-[70px]">조회</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for board in boards %}
+                        <tr onclick="location.href='{% url 'board:board_detail' category board.id %}'">
+                            <td>{{ board.list_number }}</td>
+                            <td>
+                                {{ board.title }}
+                                {% if board.tags.all %}
+                                {% for tag in board.tags.all %}
+                                <span class="badge bg-secondary ms-1 text-[0.7rem]">{{ tag.name }}</span>
+                                {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>{{ board.writer }}</td>
+                            <td>{{ board.created_at|date:"Y-m-d" }}</td>
+                            <td>{{ board.view_count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox text-[2rem]"></i>
+                                <p class="mt-2 mb-0">게시글이 없습니다. 첫 글을 작성해보세요!</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="board-pagination-wrap d-flex justify-content-center mt-4" aria-label="게시글 페이지 이동">
+            <ul class="pagination board-pagination">
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                    {% if page_obj.has_previous %}
+                    <a class="page-link page-arrow" href="?p={{ page_obj.previous_page_number }}" aria-label="이전 페이지">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    {% else %}
+                    <span class="page-link page-arrow" aria-hidden="true">
+                        <i class="bi bi-chevron-left"></i>
+                    </span>
+                    {% endif %}
+                </li>
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    {% if page_obj.number == num %}
+                    <span class="page-link">{{ num }}</span>
+                    {% else %}
+                    <a class="page-link" href="?p={{ num }}">{{ num }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    {% if page_obj.has_next %}
+                    <a class="page-link page-arrow" href="?p={{ page_obj.next_page_number }}" aria-label="다음 페이지">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    {% else %}
+                    <span class="page-link page-arrow" aria-hidden="true">
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

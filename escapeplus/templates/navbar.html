@@ -1,0 +1,141 @@
+{% with namespace=request.resolver_match.namespace url_name=request.resolver_match.url_name %}
+<nav class="sticky top-0 z-[1030] border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/85">
+    <div class="mx-auto max-w-[1440px] px-4 lg:px-6">
+        <div class="flex items-center justify-between gap-4 py-3">
+            <a href="{% url 'home' %}" class="flex items-center gap-3 no-underline">
+                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#667eea] to-[#764ba2] text-lg text-white shadow-lg shadow-indigo-200/80">
+                    <i class="bi bi-door-open-fill"></i>
+                </span>
+                <span class="min-w-0">
+                    <span class="block text-[1.05rem] font-extrabold tracking-[-0.03em] text-slate-900">escape-plus-U</span>
+                    <span class="block text-[0.78rem] font-medium text-slate-500">방탈출 리뷰 & 커뮤니티</span>
+                </span>
+            </a>
+
+            <div class="hidden items-center gap-2 lg:flex">
+                <a href="{% url 'home' %}" class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition {% if not namespace and url_name == 'home' %}bg-slate-900 text-white shadow-lg shadow-slate-200{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900{% endif %}">
+                    <i class="bi bi-house-door"></i> 홈
+                </a>
+                <a href="{% url 'maps:map_search' %}" class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition {% if namespace == 'maps' %}bg-[#eef2ff] text-[#3346b5]{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900{% endif %}">
+                    <i class="bi bi-map"></i> 지도
+                </a>
+                <a href="{% url 'cafe:cafe_list' %}" class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition {% if namespace == 'cafe' %}bg-[#eef2ff] text-[#3346b5]{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900{% endif %}">
+                    <i class="bi bi-shop"></i> 카페
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'note:inbox' %}" class="relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition {% if namespace == 'note' %}bg-[#eef2ff] text-[#3346b5]{% else %}text-slate-600 hover:bg-slate-100 hover:text-slate-900{% endif %}">
+                    <i class="bi bi-envelope-paper"></i> 쪽지
+                    {% if unread_note_count %}
+                    <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 py-0.5 text-[0.7rem] font-bold text-white">{{ unread_note_count }}</span>
+                    {% endif %}
+                </a>
+                <span class="ml-2 text-sm font-semibold text-slate-500">{{ user }}</span>
+                <a href="{% url 'accounts:logout' %}" class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 no-underline transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900">
+                    <i class="bi bi-box-arrow-right"></i> 로그아웃
+                </a>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 no-underline transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900 {% if namespace == 'accounts' and url_name == 'login' %}border-[#c9d2ff] bg-[#eef2ff] text-[#3346b5]{% endif %}">
+                    <i class="bi bi-box-arrow-in-right"></i> 로그인
+                </a>
+                <a href="{% url 'accounts:register' %}" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white no-underline transition hover:bg-slate-800 {% if namespace == 'accounts' and url_name == 'register' %}bg-[#3346b5]{% endif %}">
+                    <i class="bi bi-person-plus"></i> 회원가입
+                </a>
+                {% endif %}
+            </div>
+
+            <button
+                type="button"
+                class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 transition hover:bg-slate-100 lg:hidden"
+                data-navbar-toggle
+                aria-controls="mobile-nav-panel"
+                aria-expanded="false"
+                aria-label="메뉴 열기"
+            >
+                <i class="bi bi-list text-2xl"></i>
+            </button>
+        </div>
+
+        <div class="hidden border-t border-slate-100 py-3 lg:block">
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="{% url 'board:board_list' 'review' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'review' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">
+                    <i class="bi bi-star-fill mr-1.5"></i>리뷰
+                </a>
+                <a href="{% url 'board:board_list' 'job' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'job' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">구직</a>
+                <a href="{% url 'board:board_list' 'assignment' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'assignment' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">양도</a>
+                <a href="{% url 'board:board_list' 'make' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'make' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">창작</a>
+                <a href="{% url 'board:board_list' 'suggest' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'suggest' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">질문/건의</a>
+                <a href="{% url 'board:board_list' 'tip' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'tip' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">꿀팁</a>
+                <a href="{% url 'board:board_list' 'team' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'team' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">대외활동</a>
+                <a href="{% url 'board:board_list' 'play' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'play' %}bg-[#3346b5] text-white shadow-lg shadow-indigo-200{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900{% endif %}">온라인</a>
+            </div>
+        </div>
+
+        <div id="mobile-nav-panel" class="hidden border-t border-slate-100 py-3 lg:hidden">
+            <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    <a href="{% url 'home' %}" class="rounded-2xl px-4 py-3 text-sm font-semibold no-underline transition {% if not namespace and url_name == 'home' %}bg-slate-900 text-white{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        <i class="bi bi-house-door mr-1.5"></i>홈
+                    </a>
+                    <a href="{% url 'maps:map_search' %}" class="rounded-2xl px-4 py-3 text-sm font-semibold no-underline transition {% if namespace == 'maps' %}bg-[#eef2ff] text-[#3346b5]{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        <i class="bi bi-map mr-1.5"></i>지도
+                    </a>
+                    <a href="{% url 'cafe:cafe_list' %}" class="rounded-2xl px-4 py-3 text-sm font-semibold no-underline transition {% if namespace == 'cafe' %}bg-[#eef2ff] text-[#3346b5]{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        <i class="bi bi-shop mr-1.5"></i>카페
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'note:inbox' %}" class="rounded-2xl px-4 py-3 text-sm font-semibold no-underline transition {% if namespace == 'note' %}bg-[#eef2ff] text-[#3346b5]{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        <i class="bi bi-envelope-paper mr-1.5"></i>쪽지{% if unread_note_count %} ({{ unread_note_count }}){% endif %}
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" class="rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 no-underline transition bg-slate-100">
+                        <i class="bi bi-box-arrow-right mr-1.5"></i>로그아웃
+                    </a>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="rounded-2xl px-4 py-3 text-sm font-semibold no-underline transition {% if namespace == 'accounts' and url_name == 'login' %}bg-[#eef2ff] text-[#3346b5]{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        <i class="bi bi-box-arrow-in-right mr-1.5"></i>로그인
+                    </a>
+                    <a href="{% url 'accounts:register' %}" class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white no-underline transition">
+                        <i class="bi bi-person-plus mr-1.5"></i>회원가입
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if user.is_authenticated %}
+                <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">
+                    <i class="bi bi-person-circle mr-1.5"></i>{{ user }}
+                </div>
+                {% endif %}
+
+                <div>
+                    <div class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">게시판 메뉴</div>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{% url 'board:board_list' 'review' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'review' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">리뷰</a>
+                        <a href="{% url 'board:board_list' 'job' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'job' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">구직</a>
+                        <a href="{% url 'board:board_list' 'assignment' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'assignment' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">양도</a>
+                        <a href="{% url 'board:board_list' 'make' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'make' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">창작</a>
+                        <a href="{% url 'board:board_list' 'suggest' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'suggest' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">질문/건의</a>
+                        <a href="{% url 'board:board_list' 'tip' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'tip' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">꿀팁</a>
+                        <a href="{% url 'board:board_list' 'team' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'team' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">대외활동</a>
+                        <a href="{% url 'board:board_list' 'play' %}" class="rounded-full px-3.5 py-2 text-sm font-semibold no-underline transition {% if category == 'play' %}bg-[#3346b5] text-white{% else %}bg-slate-100 text-slate-700{% endif %}">온라인</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var toggleButton = document.querySelector('[data-navbar-toggle]');
+    var mobilePanel = document.getElementById('mobile-nav-panel');
+
+    if (!toggleButton || !mobilePanel) {
+        return;
+    }
+
+    toggleButton.addEventListener('click', function () {
+        var isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+        toggleButton.setAttribute('aria-expanded', String(!isExpanded));
+        mobilePanel.classList.toggle('hidden');
+    });
+});
+</script>
+{% endwith %}

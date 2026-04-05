@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cafe.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="bi bi-shop me-2"></i>{{ cafe.name }}</h4>
+            </div>
+            {% if cafe.image_url %}
+            <img src="{{ cafe.image_url }}" class="card-img-top max-h-[300px] object-cover" alt="{{ cafe.name }}">
+            {% endif %}
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <th class="w-[120px]"><i class="bi bi-geo-alt me-1"></i>주소</th>
+                        <td>{{ cafe.address }}</td>
+                    </tr>
+                    {% if cafe.region %}
+                    <tr>
+                        <th><i class="bi bi-pin-map me-1"></i>지역</th>
+                        <td><span class="badge bg-primary">{{ cafe.region }}</span></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th><i class="bi bi-telephone me-1"></i>전화번호</th>
+                        <td>{{ cafe.phone|default:"-" }}</td>
+                    </tr>
+                    {% if cafe.operating_hours %}
+                    <tr>
+                        <th><i class="bi bi-clock me-1"></i>영업시간</th>
+                        <td>{{ cafe.operating_hours }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th><i class="bi bi-puzzle me-1"></i>테마 수</th>
+                        <td><span class="badge bg-info fs-6">{{ cafe.theme_count }}개</span></td>
+                    </tr>
+                    {% if cafe.website %}
+                    <tr>
+                        <th><i class="bi bi-globe me-1"></i>웹사이트</th>
+                        <td><a href="{{ cafe.website }}" target="_blank">{{ cafe.website }}</a></td>
+                    </tr>
+                    {% endif %}
+                    {% if cafe.description %}
+                    <tr>
+                        <th><i class="bi bi-info-circle me-1"></i>설명</th>
+                        <td>{{ cafe.description }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="bi bi-stars me-2"></i>테마 목록</h5>
+                    <span class="badge text-bg-dark">{{ cafe.themes.count }}개 등록</span>
+                </div>
+
+                {% with themes=cafe.themes.all %}
+                {% if themes %}
+                <div class="row g-3">
+                    {% for theme in themes %}
+                    <div class="col-md-6">
+                        <div class="card h-100 border">
+                            {% if theme.poster_url %}
+                            <img src="{{ theme.poster_url }}" class="card-img-top max-h-[200px] object-cover" alt="{{ theme.name }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold">{{ theme.name }}</h6>
+                                {% if theme.description %}
+                                <p class="small text-muted mb-2">{{ theme.description }}</p>
+                                {% endif %}
+                                <div class="d-flex flex-wrap gap-1 mb-2">
+                                    {% if theme.genre %}<span class="badge text-bg-light border">{{ theme.genre }}</span>{% endif %}
+                                    <span class="badge bg-warning text-dark">난이도 {{ theme.difficulty }}/5</span>
+                                    {% if theme.horror_level > 1 %}<span class="badge bg-danger">공포 {{ theme.horror_level }}/5</span>{% endif %}
+                                    {% if theme.activity_level > 1 %}<span class="badge bg-success">활동 {{ theme.activity_level }}/5</span>{% endif %}
+                                </div>
+                                <table class="table table-sm table-borderless mb-0 small">
+                                    <tr>
+                                        <td><i class="bi bi-clock me-1"></i>{{ theme.duration_minutes }}분</td>
+                                        <td><i class="bi bi-people me-1"></i>{{ theme.min_players }}~{{ theme.max_players }}명</td>
+                                    </tr>
+                                    <tr>
+                                        {% if theme.price %}
+                                        <td><i class="bi bi-cash me-1"></i>{{ theme.price|floatformat:0 }}원</td>
+                                        {% else %}
+                                        <td><i class="bi bi-cash me-1"></i>가격 미정</td>
+                                        {% endif %}
+                                        {% if theme.clear_rate %}
+                                        <td><i class="bi bi-trophy me-1"></i>탈출률 {{ theme.clear_rate }}%</td>
+                                        {% else %}
+                                        <td></td>
+                                        {% endif %}
+                                    </tr>
+                                    {% if theme.rating %}
+                                    <tr>
+                                        <td colspan="2"><i class="bi bi-star-fill text-warning me-1"></i>{{ theme.rating }} (리뷰 {{ theme.review_count }}개)</td>
+                                    </tr>
+                                    {% endif %}
+                                </table>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                {% if theme.reservation_url %}
+                                <a href="{{ theme.reservation_url }}" target="_blank" rel="noopener noreferrer"
+                                   class="btn btn-sm btn-primary w-100">
+                                    예약하기
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">예약 링크 준비 중</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-secondary mb-0">
+                    아직 등록된 테마가 없습니다. 관리자에서 테마명과 예약 링크를 추가하면 이곳에 바로 노출됩니다.
+                </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'cafe:cafe_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>목록으로
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
