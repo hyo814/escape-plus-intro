@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-11">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <h3 class="mb-1"><i class="bi bi-envelope-paper me-2"></i>{{ page_title }}</h3>
+                <p class="text-muted mb-0">{{ page_description }}</p>
+            </div>
+            <a href="{% url 'note:compose' %}" class="btn btn-primary">
+                <i class="bi bi-pencil-square me-1"></i>쪽지 쓰기
+            </a>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap gap-2">
+                {% for tab in tabs %}
+                <a
+                    href="{% url tab.url_name %}"
+                    class="btn {% if note_box == tab.key %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+                >
+                    {{ tab.label }}
+                    {% if tab.key == 'inbox' and unread_note_count %}
+                    <span class="badge text-bg-light ms-1">{{ unread_note_count }}</span>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="w-[180px]">
+                                    {% if note_box == 'inbox' %}보낸 사람{% else %}받는 사람{% endif %}
+                                </th>
+                                <th>제목</th>
+                                <th class="w-[130px]">상태</th>
+                                <th class="w-[170px]">보낸 시간</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for note in notes %}
+                            <tr onclick="location.href='{% url 'note:detail' note.id %}'">
+                                <td class="fw-semibold">
+                                    {% if note_box == 'inbox' %}
+                                    {{ note.sender }}
+                                    {% else %}
+                                    {{ note.recipient }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>{{ note.subject }}</span>
+                                        {% if note_box == 'inbox' and not note.is_read %}
+                                        <span class="badge text-bg-danger">안읽음</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        {{ note.content|truncatechars:70 }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if note_box == 'inbox' %}
+                                        {% if note.is_read %}
+                                        <span class="badge text-bg-secondary">읽음</span>
+                                        {% else %}
+                                        <span class="badge text-bg-warning">새 쪽지</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if note.is_read %}
+                                        <span class="badge text-bg-success">상대가 읽음</span>
+                                        {% else %}
+                                        <span class="badge text-bg-secondary">아직 안읽음</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{{ note.created_at|date:"Y-m-d H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox text-[2rem]"></i>
+                                    <p class="mt-2 mb-0">표시할 쪽지가 없습니다.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
